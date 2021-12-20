@@ -11,7 +11,14 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk" crossorigin="anonymous">
     <script src="https://www.gstatic.com/firebasejs/8.6.3/firebase-app.js"></script>
     <script>
-        var firebaseConfig = {};
+        var firebaseConfig = {
+        apiKey: "AIzaSyBpZMdjcXeF3XiYakqzkajEq_jGz0B0I_w",
+        authDomain: "ej-crud.firebaseapp.com",
+        projectId: "ej-crud",
+        storageBucket: "ej-crud.appspot.com",
+        messagingSenderId: "765199524416",
+        appId: "1:765199524416:web:43e09158e998cec704b5a5"
+    };
     firebase.initializeApp(firebaseConfig);
     </script>
     <script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-firestore.js"></script>
@@ -50,7 +57,7 @@
                                 <div class="text-container">
                                     <span class="text">Temaiken!</span>
                                     <br>
-                                    <span class="text" id="songName">Coding and Stuff</span>
+                                    <span class="text" id="songName">Para sacar los PROHIBIDOS</span>
                                     <br>
                                     <div class="playback_controls">
                                     <button class="btn-reproductor" onclick="skip('prev')"><i class="fa fa-fast-backward"></i></button>

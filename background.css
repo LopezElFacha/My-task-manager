@@ -711,10 +711,3 @@ body .container2 .play-list .play-list-row:after {
 .myBtn{
   align-self: center !important;
 }
-.c{
-  cursor: pointer;
-  transition: color 0.25s;
-}
-.c:hover{
-  color: #00ff00;
-}

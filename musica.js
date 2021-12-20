@@ -3,10 +3,6 @@ var isStopped = true;
 var currentSong = 0;
 var playlist = [];
 var isRandomed = false;
-function cambiaNombres(){
-  document.getElementById("songName").textContent = playlist[currentSong].nombreCorto;
-  document.title = playlist[currentSong].nombre;
-}
 function normal() {
   song.pause();
   song.currentTime = 0;
@@ -30,11 +26,13 @@ function randomed(e) {
   var y = Math.floor((Math.random() * (nbList)));
   stop();
   song.src = playlist[y].url;
+  console.log(y)
   document.getElementById(`cancion${currentSong}`).classList.remove("current")
   document.getElementById(`cancion${y}`).classList.add("current")
   currentSong = y;
   song.play();
-  cambiaNombres()
+  document.getElementById("songName").textContent = playlist[currentSong].nombre;
+  document.title = playlist[currentSong].nombre;
 }
 function skip(to) {
   document.getElementById(`cancion${currentSong}`).classList.remove("current")
@@ -64,7 +62,8 @@ function playpause() {
     }
     song.play();
     songName = document.getElementById("songName");
-    cambiaNombres()
+    songName.innerHTML = playlist[currentSong].nombre;
+    document.title = playlist[currentSong].nombre;
     isStopped = false;
   }
 }
@@ -117,19 +116,22 @@ function random() {
     document.querySelector("#random").setAttribute('style', 'color: white')
   }
   song.play();
-  cambiaNombres(playlist[currentSong].nombre, playlist[currentSong].nombre)
+  document.getElementById("songName").textContent = playlist[currentSong].nombre;
+  document.title = playlist[currentSong].nombre;
+  console.log(isRandomed)
 }
 function creador(nombre, i) {
   listItem = document.createElement('div');
-  listItem.setAttribute('class','list-item text-center c');
+  listItem.setAttribute('class','list-item');
   listItem.setAttribute('id',`cancion${i}`);
 
   wrapper = document.createElement('div');
   wrapper.setAttribute('class','wrap-text');
 
   span = document.createElement('span');
-  span.innerText = nombre;
+  span.innerHTML = nombre;
   span.setAttribute('onclick', `play(${i})`);
+  span.setAttribute('style', 'cursor:pointer');
   span.setAttribute('data-dismiss',"modal")
 
   wrapper.appendChild(span);
@@ -142,14 +144,12 @@ async function addList() {
   await firebase.storage().ref().listAll().then((res)=>{
     res.items.forEach(async(item) => {
       let nombre = item.name
-      let nombreCorto = ""
       if(nombre.length > 25) {
-        nombreCorto = nombre.substr(0, 20)
-        nombreCorto = nombreCorto.concat("...")
+        nombre = nombre.substr(0, 20)
+        nombre = nombre.concat("...")
       }
-      nombre = item.name
       await item.getDownloadURL().then(url=>{
-        let obj = {url,nombre,nombreCorto, i}
+        let obj = {url,nombre, i}
         playlist.push(obj)
         creador(nombre, i)
       })

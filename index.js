@@ -8,6 +8,7 @@ document.querySelector("#cerrar").addEventListener("click", ()=>{
         location.replace("/login.html");
     })
 })
+const temazo = "hybrid rainbow" 
 let fecha = new Date();
 let options = { year: 'numeric', month: 'long', day: 'numeric' };
 document.querySelector("#fecha").innerText = fecha.toLocaleDateString("es-ES", options)
@@ -39,7 +40,7 @@ const saveTask = (title, description) => {
     })
 }
 const deleteTask = id => db.collection("tasks").doc(id).delete()
-const getTasks = () => db.collection("tasks").orderBy("fecha").get();
+const getTasks = () => db.collection("tasks").get();
 const onGetTasks = (cb) => db.collection("tasks").onSnapshot(cb)
 const getTask = (id) => db.collection("tasks").doc(id).get()
 const updateTask = (id, task) => db.collection("tasks").doc(id).update(task)
@@ -53,16 +54,18 @@ window.addEventListener("DOMContentLoaded", async(e) => {
     })
     onGetTasks((querySnapshot) => {
         taskContainer.innerHTML = ""
-        let listaTareas = []
+        let miArray = [];
         querySnapshot.forEach(doc => {
             const task = doc.data()
             task.id = doc.id
-            listaTareas.push(task) 
+            miArray.push(task)
         });
-        listaTareas.sort(function(a, b) {
-            return a.fecha - b.fecha;
-        });
-        listaTareas.forEach(task => {
+        miArray.sort(function (a, b) {
+            if (a.fecha > b.fecha)return 1;
+            if (a.fecha < b.fecha)return -1;
+            return 0;
+        })
+        miArray.forEach(task=>{
             let timestamp = task.fecha
             let date = new Date(timestamp * 1000);
             let options2 = { month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
@@ -76,8 +79,7 @@ window.addEventListener("DOMContentLoaded", async(e) => {
                     <button class="btn btn-warning btn-edit" data-id="${task.id}">Editar</button>
                 </div>
             </div>`
-        })
-        const btnsDelete = document.querySelectorAll(".btn-delete")
+            const btnsDelete = document.querySelectorAll(".btn-delete")
             btnsDelete.forEach(btn => {
                 btn.addEventListener("click", async(e) => {
                     await deleteTask(e.target.dataset.id)
@@ -95,6 +97,7 @@ window.addEventListener("DOMContentLoaded", async(e) => {
                     form["btn-task-form"].innerText = "guardar"
                 })
             })
+        })
     })
 
 })
