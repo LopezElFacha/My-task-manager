@@ -3,46 +3,32 @@
   margin: 0;
   box-sizing: border-box;
 }
-html{
-  min-height: 100vh;
-}
-
-body::-webkit-scrollbar {
-  width: 6px;
-}
-
-body::-webkit-scrollbar-track {
-  background: transparent;        
-}
-body::-webkit-scrollbar-thumb {
-  background-color: blue; 
-  border-radius: 20px;       
-}
 .modal::-webkit-scrollbar {
   width: 6px;
 }
 .modal::-webkit-scrollbar-track {
-  background: transparent;        
+  background: transparent;
 }
 .modal::-webkit-scrollbar-thumb {
-  background-color: #00ff00; 
-  border-radius: 20px;       
+  background-color: #00ff00;
+  border-radius: 20px;
 }
 html,
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
 body {
-  max-height: 100vh;
   max-width: 100vw;
-}	
-.wrapper{
+  min-height: 100vh;
+  overflow: hidden;
+}
+.wrapper {
   white-space: pre-wrap;
 }
-.dragged{
+.dragged {
   border: 2px #000 dotted;
 }
-.btnAyuda{
+.btnAyuda {
   position: absolute;
   right: 10px;
   top: 10px;
@@ -58,18 +44,18 @@ body {
   left: 50%;
   transform: translateX(-50%);
 }
-.botonera{
+.botonera {
   display: flex;
   justify-content: center;
   gap: 50px;
 }
-.botonera div i{
+.botonera div i {
   font-size: 32px;
   cursor: pointer;
   color: var(--col);
   transition: 0.25s;
 }
-.botonera div i:hover{
+.botonera div i:hover {
   transform: translateY(-8px);
   text-shadow: 0 0 15px var(--col);
 }
@@ -80,14 +66,14 @@ body {
   margin-top: 10px;
   min-height: 50px;
   padding: 10px 10px;
-  border: #000 dotted 2px; 
+  border: #000 dotted 2px;
   cursor: pointer;
   transition: 0.5s;
   background: #fff;
 }
-.list-item:hover{
+.list-item:hover {
   color: #00ff00;
-  border: #00ff00 dotted 2px; 
+  border: #00ff00 dotted 2px;
   box-shadow: 0 0 5px #00ff00;
   transform: translatey(-15px);
 }
@@ -117,10 +103,6 @@ body {
 #sourceUrl:active,
 #sourceUrl:focus {
   border: 2px solid #0088ff;
-}
-.text {
-  color: #ffffff;
-  display: block;
 }
 #seek::-webkit-slider-thumb,
 #volume::-webkit-slider-thumb {
@@ -162,10 +144,6 @@ body {
   -o-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
 }
-.text {
-  color: #ffffff;
-  display: block;
-}
 .btn-reproductor {
   background: #000000;
   color: white;
@@ -191,7 +169,7 @@ body {
   -moz-border-radius: 32px;
   border-radius: 32px;
 }
-input[type="range"] {
+input[type='range'] {
   -webkit-appearance: none;
   border: 1px solid #000000;
   height: 5px;
@@ -211,7 +189,7 @@ input::-webkit-slider-thumb {
   border-radius: 10px;
   background: #ffffff;
 }
-@import "//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.css";
+@import '//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.css';
 .screen-reader-text {
   /* Reusable, toolbox kind of class */
   position: absolute;
@@ -227,17 +205,17 @@ input::-webkit-slider-thumb {
 .show {
   display: inline-block !important;
 }
-.previous-track-btn{
+.previous-track-btn {
   position: relative;
-    width: 20px;
-    height: 20px;
-    right: 25px;
+  width: 20px;
+  height: 20px;
+  right: 25px;
 }
-.next-track-btn{
-    position: relative;
-    width: 20px;
-    height: 20px;
-    right: 25px;
+.next-track-btn {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  right: 25px;
 }
 #list {
   margin-top: 16px;
@@ -263,13 +241,6 @@ input::-webkit-slider-thumb {
 .add-list {
   padding: 4px 6px;
 }
-.wrap-text {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 190px;
-  display: inline-block;
-}
 @keyframes animate {
   0% {
     background-position: 0 0;
@@ -281,22 +252,27 @@ input::-webkit-slider-thumb {
     background-position: 0 0;
   }
 }
-.current{
+.current {
   color: #0088ff;
 }
-.myBtn{
+.myBtn {
   align-self: center !important;
 }
-.miNav{
+.miNav {
   background-color: #fff;
   color: #000;
   padding: 10px;
-  gap: 10px;
-  border-bottom: #000 solid 2px;
+  gap: 5px;
+  border-bottom: #000 solid 2px !important;
+  border-radius: 0;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 50px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  margin-bottom: 25px;
+}
+.miNav h1 {
+  min-width: 205px;
 }
 .miNav h1,
 .miNav h2,
@@ -304,62 +280,59 @@ input::-webkit-slider-thumb {
 .miNav h4,
 .miNav h5,
 .miNav h6,
-.miNav p{
+.miNav p {
   margin: 0;
 }
-#songName{
-  max-width: 150px;
+#songName {
+  max-width: 80px;
   max-height: 20px;
   white-space: pre-wrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: .25s;
-} 
-#songName:hover{
+  transition: 0.5s;
+}
+#songName:hover {
   max-width: 100%;
-  transition: .25s;
-} 
-.botones{
+  transition: 0.5s;
+}
+.botones {
   display: flex;
   align-items: center;
   gap: 10px;
-  transition: .5s;
-  flex-wrap: nowrap;
+  transition: 0.5s;
 }
-.botones div i{
+.icons {
   font-size: 2em;
   cursor: pointer;
-}	
-@media screen and (max-width: 700px) {
-  #saludo,
-  #songName,
+}
+@media screen and (max-width: 768px) {
+
   #currentDuration,
   #fullDuration,
   #seek,
   #mute,
-  #volume
-  {
+  #volume {
     display: none;
   }
 }
-#saludo{
+#saludo {
   white-space: pre-wrap;
 }
-.card{
+.card {
   width: 300px;
   min-height: 300px;
   max-height: 300px;
   overflow-y: scroll;
 }
-.columnas{
+.columnas {
   display: flex;
   overflow-x: scroll;
   padding-bottom: 20px;
+  height: auto;
 }
-.columna{
-  min-width: 400px;
-  min-height: 750px;
-  max-height: 750px;
+.columna {
+  min-width: 350px;
+  height: 750px;
   border-radius: 10px;
   border: #000 2px solid;
   display: flex;
@@ -370,24 +343,44 @@ input::-webkit-slider-thumb {
   flex-wrap: nowrap;
   margin-left: 10px;
   margin-right: 10px;
+  padding-top: 0 !important;
 }
-.miContainer{
+.miContainer {
   max-width: 100%;
+  height: auto;
 }
 .columnas::-webkit-scrollbar,
 .columna::-webkit-scrollbar,
-.card::-webkit-scrollbar  {
-  width: 4px;
+.miNav::-webkit-scrollbar,
+.card::-webkit-scrollbar {
+  width: 6px;
 }
 
 .columnas::-webkit-scrollbar-track,
 .columna::-webkit-scrollbar-track,
+.miNav::-webkit-scrollbar-track,
 .card::-webkit-scrollbar-track {
-  background: transparent;        
+  background: transparent;
 }
 .columnas::-webkit-scrollbar-thumb,
 .columna::-webkit-scrollbar-thumb,
+.miNav::-webkit-scrollbar-thumb,
 .card::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 255, 0.466); 
-  border-radius: 20px;       
+  background-color: rgba(0, 0, 255, 0.466);
+  border-radius: 20px;
+}
+.taskBar {
+  box-shadow: inset 0 1px 0 0 #fff;
+  background-color: silver;
+  border-color: #dfdfdf;
+  border-top: 1px solid;
+  bottom: 0;
+  left: 0;
+  padding: 2px 0;
+  position: absolute;
+  right: 0;
+  justify-content: center;
+}
+.taskBar div {
+  gap: 30px;
 }

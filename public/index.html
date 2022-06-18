@@ -22,6 +22,7 @@
             messagingSenderId: "765199524416",
             appId: "1:765199524416:web:43e09158e998cec704b5a5"
         };
+        //a
         firebase.initializeApp(firebaseConfig);
     </script>
     <script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-firestore.js"></script>
@@ -36,6 +37,7 @@
     <nav class="miNav">
         <h1 id="saludo">Hola Facherazo!</h1>
         <div class="botones">
+            <p id="songName">Temaiken!</p>
             <button class="btn-reproductor" onclick="skip('prev')"><i class="fa fa-fast-backward"></i></button>
             <button class="btn-reproductor" onclick="playpause()"><i class="fa fa-play"></i><i
                     class="fa fa-pause"></i></button>
@@ -52,43 +54,45 @@
             <button class="btn-reproductor" onclick="modalShower('#myModal')">
                 <i id="playlist-btn" class="fas fa-record-vinyl"></i>
             </button>
-            <p id="songName" >Temaiken!</p>
         </div>
+    </nav>
+    <div class="miContainer">
+
+        <div class="columnas">
+            <div class="columna bg-light p-3" id='Recurrente'>
+                <h1 class='text-center bg-light sticky-top w-100'>Recurrente</h1>
+                <div class="tasks"></div>
+            </div>
+            <div class="columna bg-light p-3" id='Accionable'>
+                <h1 class='text-center bg-light sticky-top w-100'>Accionable</h1>
+                <div class="tasks"></div>
+            </div>
+            <div class="columna bg-light p-3" id='Cortoplazo'>
+                <h1 class='text-center bg-light sticky-top w-100'>Corto Plazo</h1>
+                <div class="tasks"></div>
+            </div>
+            <div class="columna bg-light p-3" id='Largoplazo'>
+                <h1 class='text-center bg-light sticky-top w-100'>Largo Plazo</h1>
+                <div class="tasks"></div>
+            </div>
+            <div class="columna bg-light p-3" id='Incubadora'>
+                <h1 class='text-center bg-light sticky-top w-100'>Incubadora</h1>
+                <div class="tasks"></div>
+            </div>
+        </div>
+    </div>
+    <div class="taskBar d-flex flex-nowrap">
         <div class='botones'>
             <button class="btn btn-primary" onclick="modalShower('#taskForm')"> <i class="fas fa-plus"
                     aria-hidden="true"></i> </button>
             <div onclick="modalShower('#Instrucciones')">
-                <i style="--col:#222" class="fas fa-question" aria-hidden="true" draggable="true"></i>
+                <i style="--col:#222" class="fas fa-question icons" aria-hidden="true" draggable="true"></i>
             </div>
             <div id="cerrar">
-                <i style="--col:#222" class="fa-solid fa-arrow-right-from-bracket"></i>
+                <i style="--col:#222" class="fa-solid fa-arrow-right-from-bracket icons"></i>
             </div>
             <div id="btnConfig" onclick="modalShower('#ConfigMenu')">
-                <i style="--col:#222" class="fa-solid fa-gear"></i>
-            </div>
-        </div>
-    </nav>
-    <div class="miContainer">
-        <div class="columnas">
-            <div class="columna bg-light p-3" id='Recurrente'>
-                <h1 class='text-center'>Recurrente</h1>
-                <div class="tasks"></div>
-            </div>
-            <div class="columna bg-light p-3" id='Accionable'>
-                <h1 class='text-center'>Accionable</h1>
-                <div class="tasks"></div>
-            </div>
-            <div class="columna bg-light p-3" id='Cortoplazo'>
-                <h1 class='text-center'>Corto Plazo</h1>
-                <div class="tasks"></div>
-            </div>
-            <div class="columna bg-light p-3" id='Largoplazo'>
-                <h1 class='text-center'>Largo Plazo</h1>
-                <div class="tasks"></div>
-            </div>
-            <div class="columna bg-light p-3" id='Incubadora'>
-                <h1 class='text-center'>Incubadora</h1>
-                <div class="tasks"></div>
+                <i style="--col:#222" class="fa-solid fa-gear icons"></i>
             </div>
         </div>
     </div>
@@ -201,23 +205,30 @@
                         <h3><b>Bienvenido a Tareas de Lopez!</b></h3>
                     </div>
                     <div class="mt-3">
+                        <h3>Sistema de categorias</h3>
+                        Esta app utiliza 5 categorias de tareas: Recurrente (para las tareas de todos los dias), Accionable 
+                        (las tareas que te propones hacer mañana), Corto Plazo, Largo Plazo e Incubadora (para las tareas que todavia no podes 
+                        hacer). <br>
+                        Estas categorias no influyen ni son escogidas por la prioridad ni la fecha de entrega para darle mas personalizacion a
+                        estas, pero se recomienda que estas 3 sean congruentes entre si.
+                    </div>
+                    <div class="mt-3">
                         <h3>¿Como funcionan las tareas?</h3>
                         En esta app esta hecha para que anotes tus tareas, para escribir una tarea
-                        tenes que usar el formulario de la izquierda en el que tenes que anotar el
+                        tenes que usar el boton de la barra de tareas y anotar el
                         titulo,
-                        la descripcion y el nivel de prioridad de la tarea. Despues, tenes que
+                        la descripcion, el tipo GTD y el nivel de prioridad de la tarea. Despues, tenes que
                         presionar el boton <i class="fa-solid fa-paper-plane"></i> debajo del
                         formulario para
-                        enviarla. despues, tu tarea va aparecer en la derecha, donde podes
+                        enviarla. Despues, tu tarea va aparecer en su columna GTD, donde podes
                         eliminarla con el boton <i class="fa-solid fa-trash "></i> o editarla con el
                         boton
-                        <i style="--col:#FFC300" class="fa-solid fa-pen-to-square "></i> que estan
-                        debajo de cada tarea.
+                        <i style="--col:#FFC300" class="fa-solid fa-pen-to-square "></i>.
                     </div>
                     <div class="mt-3">
                         <h3>¿Como puedo cambiar la imagen de fondo?</h3>
                         Tenes que presionar el boton <i style="--col:#222" class="fa-solid fa-gear"></i>
-                        debajo del formulario de las tareas y ahi
+                        en la barra de tareas y ahi
                         seleccionar una nueva imagen. <br>
                         Recorda que las imagenes tienen que ser menores a 5MB y que el tamaño de las
                         imagenes son respetados por el fondo, por lo cual si es mas chica que la
@@ -229,7 +240,7 @@
                         Como cualquier otro. No hace falta aclarar para que sirve cada boton. <br>
                         Lo que si hay que aclarar es que la musica es la misma para todo el mundo,
                         por evidentes razones no puedo dejar que todo el mundo suba su propia
-                        musica, asique si no te gusta lo que a mi, F.
+                        musica, asique si no te gusta lo que a mi, F, aunque se viene api de Spotify... en algun momento.
                     </div>
                     <div class="mt-3">
                         <h3>Detalles de tu cuenta</h3>
