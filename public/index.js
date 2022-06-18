@@ -1,3 +1,7 @@
+const addZeros = n => {
+    if (n.toString().length < 2) return "0".concat(n);
+    return n
+}
 firebase.auth().onAuthStateChanged(user => {
     //config
     if(user == null) window.location.replace("/login.html")
@@ -6,6 +10,7 @@ firebase.auth().onAuthStateChanged(user => {
     //crud
     const form = document.querySelector("#task-form")
     const prioridadOptions = document.querySelectorAll("#Prioridad option")
+    const tipoOptions = document.querySelectorAll("#Tipo option")
     const btnEnviar = document.querySelector("#btn-task-form")
     const btnConfigEnviar = document.querySelector("#btn-config-form")
     const cancelar = document.querySelector("#Cancelar")
@@ -13,12 +18,14 @@ firebase.auth().onAuthStateChanged(user => {
     let status = false;
     let id = "";
     const db = firebase.firestore();
-    const taskContainer = document.querySelector("#task-container")
-    const saveTask = (title, description, prioridad) => {
+    document.querySelector("#cerrar").addEventListener("click", ()=>firebase.auth().signOut().then(()=>location.replace("/login.html")))
+    const saveTask = (title, description, prioridad, fecha, tipo) => {
         db.collection(user.uid).doc().set({
             "titulo": title,
             "descripcion": description,
             "prioridad":prioridad,
+            "fechaEntrega":fecha,
+            "tipo":tipo,
             "fecha": new Date()
         })
     }
@@ -27,15 +34,8 @@ firebase.auth().onAuthStateChanged(user => {
     const onGetTasks = (cb) => db.collection(user.uid).onSnapshot(cb)
     const getTask = (id) => db.collection(user.uid).doc(id).get()
     const updateTask = (id, task) => db.collection(user.uid).doc(id).update(task)
-    const getCont = () => db.collection("config").doc("contador_visitas").get()
-    getCont().then((doc) => {
-        let datos = doc.data()
-        datos.cont = datos.cont + 1
-        db.collection("config").doc("contador_visitas").update(datos)
-        document.querySelector("#cont").innerText = `Contador de visitas: ${datos.cont}`
-    })
     onGetTasks((querySnapshot) => {
-        taskContainer.innerHTML = ""
+        document.querySelectorAll(".columna .tasks").forEach(c=> c.innerHTML = '') 
         let listaTareas = []
         querySnapshot.forEach(doc => {
             const task = doc.data()
@@ -47,10 +47,14 @@ firebase.auth().onAuthStateChanged(user => {
         });
         listaTareas.forEach(task => {
             let timestamp = task.fecha
-            let date = new Date(timestamp * 1000);
+            let timestamp2 = task.fechaEntrega
+            let date = new Date(timestamp.seconds * 1000);
+            let date2 = new Date(timestamp2.seconds * 1000);
             let options2 = { month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
             let desde = date.toLocaleDateString("es-ES", options2)
+            let hasta = date2.toLocaleDateString("es-ES", options2)
             let badge
+            let badge2
             switch (task.prioridad) {
                 case "Baja":
                     badge = "bg-success"
@@ -68,14 +72,15 @@ firebase.auth().onAuthStateChanged(user => {
                     badge = "d-none"
                     break;
             }
-            // <div class="btnAyuda">
-            //         <i class="fas fa-sort btnAyuda btnOrden" data-id="${task.id}" data-orden="${task.orden}" aria-hidden="true"></i>
-            //     </div>
-            taskContainer.innerHTML += `<div class="card card-body mt-2 border-primary d-flex justify-content-center tarea" data-id="${task.id}" data-orden="${task.orden}">
+            if(Date.now() - date2 < 0) badge2 = "bg-success"
+            else badge2 = "bg-danger"
+            //recordatorio
+            document.querySelector(`#${task.tipo} .tasks`).innerHTML += `<div class="card card-body mt-2 border-primary d-flex" data-id="${task.id}" data-orden="${task.orden}">
                 <h3  class="text-center">${task.titulo}</h3>
                 <p  class="wrapper">${task.descripcion}</p>
                 <p  class="text-center"> <span class="badge badge-pill ${badge}">Prioridad: ${task.prioridad}</span> </p>
-                <p  class="text-center"> <span class="badge badge-pill bg-info">${desde}</span> </p>
+                <p  class="text-center"> <span class="badge badge-pill bg-info">Creado en ${desde}</span> </p>
+                <p  class="text-center"> <span class="badge badge-pill ${badge2}">Para el ${hasta}</span> </p>
                 <div class="botonera mt-3">
                     <div  class="btn-delete">
                         <i data-id="${task.id}" style="--col:#C70039" class="fa-solid fa-trash "></i>
@@ -84,19 +89,17 @@ firebase.auth().onAuthStateChanged(user => {
                         <i data-id="${task.id}" style="--col:#FFC300" class="fa-solid fa-pen-to-square "></i>
                     <div>
                 </div>
-                
             </div>`
         })
         const btnsDelete = document.querySelectorAll(".btn-delete")
         btnsDelete.forEach(btn => {
             btn.addEventListener("click", async(e) => {
-                await deleteTask(e.target.dataset.id)
-                status = false
-                id = ""
-                form.reset();
-                cancelar.classList.add("d-none")
-                prioridadOptions.forEach(i => i.removeAttribute("selected"))
-                document.querySelector(`#opcion${task.prioridad}`).setAttribute("selected","true")
+                if(confirm("¿Queres borrar esta tarea definitivamente?")){
+                    await deleteTask(e.target.dataset.id)
+                    status = false
+                    id = ""
+                    form.reset();
+                }
             })
         })
         const btnsEdit = document.querySelectorAll(".btn-edit")
@@ -106,81 +109,53 @@ firebase.auth().onAuthStateChanged(user => {
                 const task = doc.data()
                 status = true
                 id = doc.id
-                cancelar.classList.remove("d-none")
+                let date = new Date(task.fechaEntrega.seconds * 1000)
                 form["task-title"].value = task.titulo
                 form["task-description"].value = task.descripcion
+                form["task-date"].value = date.getFullYear() + "-" + addZeros((date.getMonth()+1)) + "-" + addZeros(date.getDate()) + "T" + addZeros(date.getHours()) + ":" + addZeros(date.getMinutes())
                 prioridadOptions.forEach(i => i.removeAttribute("selected"))
                 document.querySelector(`#opcion${task.prioridad}`).setAttribute("selected","true")
+                tipoOptions.forEach(i => i.removeAttribute("selected"))
+                document.querySelector(`#opcion${task.tipo}`).setAttribute("selected","true")
+                modalShower('#taskForm')
                 form["task-title"].focus()
             })
         })
-        // const btnsOrden = document.querySelectorAll(".btnOrden")
-        // console.log(btnsOrden)
-        // btnsOrden.forEach(btn =>{
-        //     btn.addEventListener("click", e=>e.preventDefault())
-        //     btn.addEventListener("dragstart", e=> {
-        //         e.preventDefault()
-        //         e.dataTransfer.setData("id", e.target.dataset.id)
-        //         e.dataTransfer.setData("orden", e.target.dataset.orden)
-        //         e.target.style.color = "green"
-        //         console.log("empezo "+ e.target.dataset.id + " "+ e.target.dataset.orden)
-        //     })
-        //     btn.addEventListener("dragend", e=> {
-        //         e.preventDefault()
-        //         e.target.style.color = "#000"
-        //         console.log("end")
-        //     })
-        // })
-        // const tareas = document.querySelectorAll(".tarea")
-        // tareas.forEach(t=>{
-        //     t.addEventListener("dragenter", e=>{
-        //         e.target.classList.add("dragged")
-        //         console.log("entro")
-        //     })
-        //     t.addEventListener("dragleave", e=>{
-        //         e.target.classList.remove("dragged")
-        //         console.log("salio")
-        //     })
-        //     t.addEventListener("dragover", e=>e.preventDefault())
-        //     t.addEventListener("drop", async(e)=>{
-        //         let tarea1ID = e.target.dataset.id
-        //         let tarea1 = {"orden": e.dataTransfer.getData("orden")}
-        //         let tarea2ID = e.dataTransfer.getData("id")
-        //         let tarea2 = {"orden": e.target.dataset.id}
-        //         await updateTask(tarea1ID, tarea1)
-        //         await updateTask(tarea2ID, tarea2)
-        //         await getTasks()
-        //     })
-        // })
     })
     const enviador = async(e) => {
         e.preventDefault()
         const title = form["task-title"];
         const description = form["task-description"];
         const Prioridad = form["Prioridad"];
+        const Tipo = form["Tipo"];
+        const FechaEntrega = form["task-date"];
         const Botonera = document.querySelector("#Botonera"); 
         const Spinner = document.querySelector("#Spinner");
-        if(title.value.trim() != "" || description.value.trim() != ""){
+        if((title.value.trim() != "" || description.value.trim() != "") && FechaEntrega.value.trim() != ""){
             Botonera.classList.toggle("d-none")
             Spinner.classList.toggle("d-none")
-            if (!status) await saveTask(title.value, description.value, Prioridad.value)
+            if (!status) await saveTask(title.value, description.value, Prioridad.value, new Date(FechaEntrega.value), Tipo.value)
             else {
                 await updateTask(id, {
                     "titulo": title.value,
                     "descripcion": description.value,
-                    "prioridad": Prioridad.value
+                    "prioridad": Prioridad.value,
+                    "tipo": Tipo.value,
+                    "fechaEntrega" : new Date(FechaEntrega.value)
                 })
                 status = false
                 id = ""
-                cancelar.classList.add("d-none")
             }
             form.reset();
             prioridadOptions.forEach(i => i.removeAttribute("selected"))
             document.querySelector(`#opcionBaja`).setAttribute("selected","true")
+            tipoOptions.forEach(i => i.removeAttribute("selected"))
+            document.querySelector(`#opcionRecurrente`).setAttribute("selected","true")
             title.focus();
             await getTasks();
             Botonera.classList.toggle("d-none")
             Spinner.classList.toggle("d-none")
+            modalHider('#taskForm')
         }else alert("Estas mandando una tarea vacia salamin")
     }
     btnEnviar.addEventListener("click", enviador)
@@ -191,7 +166,9 @@ firebase.auth().onAuthStateChanged(user => {
         form.reset();
         prioridadOptions.forEach(i => i.removeAttribute("selected"))
         document.querySelector(`#opcionBaja`).setAttribute("selected","true")
-        cancelar.classList.add("d-none")
+        tipoOptions.forEach(i => i.removeAttribute("selected"))
+        document.querySelector(`#opcionRecurrente`).setAttribute("selected","true")
+        modalHider('#taskForm')
     })
     btnConfigEnviar.addEventListener("click",()=>{
         const Botonera = document.querySelector("#BotoneraC"); 
@@ -213,31 +190,10 @@ firebase.auth().onAuthStateChanged(user => {
         }
     })
 })
-//fecha
-document.querySelector("#cerrar").addEventListener("click", ()=>firebase.auth().signOut().then(()=>location.replace("/login.html")))
-let fecha = new Date();
-let options = { year: 'numeric', month: 'long', day: 'numeric' };
-const addZeros = n => {
-    if (n.toString().length < 2) return "0".concat(n);
-    return n
-}
-const saludo = (hora)=>{
-    if(hora > 7 && hora <= 12) return "Buenos Dias!"
-    else if(hora > 13 && hora < 19) return  "Buenas Tardes!"
-    else if(hora >= 19 && hora < 24) return  "Buenas Noches!"
-    else return "Vaya a Dormir!"
-}
-const actualizarhora = () => {
-    const time = new Date();
-    let hora = addZeros(time.getHours());
-    let min = addZeros(time.getMinutes());
-    let seg = addZeros(time.getSeconds());
-    document.querySelector("#hora").innerText = `${hora}:${min}:${seg}`
-    document.querySelector("#fecha").innerText = fecha.toLocaleDateString("es-ES", options)
-    document.querySelector("#ap").innerHTML = saludo(hora)
-}
-actualizarhora()
-setInterval(actualizarhora, 1000)
+
 function modalShower(n) {
     $(n).modal('show')
+}
+function modalHider(n) {
+    $(n).modal('hide')
 }

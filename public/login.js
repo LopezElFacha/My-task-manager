@@ -60,16 +60,17 @@ login.addEventListener("submit", async e =>{
                         window.location.replace("/index.html"); 
                     }).catch(function(err) {
                         error.classList.remove('d-none')
-                        error.innerHTML = err.code 
+                        error.innerHTML = 'Error subiendo tu imagen pero su cuenta ha sido creada exitosamente. Intenta subir una imagen de nuevo desde el menu de configuracion'
+                        setTimeout(()=>window.location.replace("/index.html"), 5000)
                     })
                 }).catch(function(err) {
                     error.classList.remove('d-none')
-                    console.log(err)
-                    error.innerHTML = err.code 
+                    error.innerHTML = 'Error en su nombre de usuario pero su cuenta ha sido creada exitosamente.'
+                    setTimeout(()=>window.location.replace("/index.html"), 5000)
                 });
             }).catch(function(err) {
                 error.classList.remove('d-none')
-                error.innerHTML = err.code 
+                error.innerHTML = 'Error reando su cuenta. Intenta de nuevo'
             });
         }
     }

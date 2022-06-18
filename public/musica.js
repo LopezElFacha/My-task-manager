@@ -151,15 +151,21 @@ async function addList() {
     });
   })
 }
-
+function timeParser(n){
+  let date = new Date(n * 1000);
+  return addZeros(date.getMinutes()) + ":" + addZeros(date.getSeconds());
+}
 song.addEventListener('error', function(){
   stop();
   if(confirm("Hubo un error. ¿Recargar?")) window.location.href = window.location;
 });
 song.addEventListener('timeupdate', function() {
   curtime = parseInt(song.currentTime,10);
+  maxtime = parseInt(song.duration,10);
   document.getElementById('seek').max = song.duration;
   document.getElementById('seek').value = curtime;
+  document.getElementById('currentDuration').innerText = timeParser(curtime);
+  document.getElementById('fullDuration').innerText = timeParser(maxtime);
 });
 $(document).ready(function(){
   $("#myInput").on("keyup", function() {
