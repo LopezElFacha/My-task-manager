@@ -1,0 +1,17 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /Musica/{allPaths=**} {
+      allow read: if request.auth != null;
+    }
+    match /Fondos/{imageId}{
+      allow read: if imageId == request.auth.uid
+      allow write: if request.resource.size < 5 * 1024 * 1024
+      						&& imageId == request.auth.uid
+                   && (request.resource.contentType == 'image/jpg'
+                   || request.resource.contentType == 'image/jpeg'
+                   || request.resource.contentType == 'image/png'
+                   || request.resource.contentType == 'image/gif');
+    }
+  }
+}
